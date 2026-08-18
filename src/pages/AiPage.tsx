@@ -205,7 +205,11 @@ export default function AiPage() {
     void loadSubscription();
   }, [loadSubscription]);
 
-  useEffect(() => () => setNavRevealed(false), []);
+  // Keep the bottom nav visible when entering the AI page; the user hides it manually.
+  useEffect(() => {
+    setNavRevealed(true);
+    return () => setNavRevealed(false);
+  }, []);
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
