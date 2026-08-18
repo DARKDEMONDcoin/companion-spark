@@ -151,12 +151,20 @@ const ServersPage = () => {
     return <div className="min-h-screen bg-gradient-dark flex items-center justify-center"><div className="text-muted-foreground font-display animate-pulse">Loading...</div></div>;
   }
 
+
+  const handleSmartOffer = async (surface: "servers" | "shop") => {
+    const ok = await requestSmartOffer(surface);
+    if (!ok) {
+      toast({ title: "Offer unavailable", description: "Try again in a moment", variant: "destructive" });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-dark pb-24">
       <SpotlightHero title="Servers">
       <div className="px-4 pt-8">
 
-      <DiscountBanner discount={discount} thinking={offerThinking} onSmartOffer={() => void requestSmartOffer("servers")} />
+      <DiscountBanner discount={discount} thinking={offerThinking} onSmartOffer={() => void handleSmartOffer("servers")} />
 
       <div className="mb-4">
         <CreateNftButton onCreated={() => void loadMyNfts()} />

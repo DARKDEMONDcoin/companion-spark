@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Zap } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useApp } from "@/context/AppContext";
 import { useToast } from "@/hooks/use-toast";
@@ -26,12 +27,6 @@ const VERIFICATION_LABELS: Record<string, string> = {
   mining_hours: "Complete 3 mining sessions",
   server_purchase: "Buy your first server",
   kill_monster: "Land a killing blow on a monster",
-};
-
-const REWARD_TEXT_COLORS: Record<string, string> = {
-  ton: "text-primary",
-  usdt: "text-primary",
-  siri: "text-accent",
 };
 
 const REWARD_LABEL: Record<string, string> = {
@@ -185,7 +180,6 @@ const TasksPage = () => {
             <div className="space-y-2.5">
               <AnimatePresence>
                 {availableTasks.map((task, i) => {
-                  const textColor = REWARD_TEXT_COLORS[task.reward_type] || "text-primary";
                   const label = REWARD_LABEL[task.reward_type] || "$NOVA";
 
                   return (
@@ -201,23 +195,20 @@ const TasksPage = () => {
                           </div>
                         )}
                         <div className="flex items-center gap-3">
+                          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/15">
+                            <Zap className="h-4 w-4 text-primary" />
+                          </div>
                           <div className="flex-1 min-w-0">
                             <p className="text-sm font-semibold text-foreground truncate">{task.title}</p>
-                            {task.verification_type !== 'none' && (
-                              <p className="text-[11px] text-muted-foreground mt-0.5 flex items-center gap-1">
-                                {VERIFICATION_LABELS[task.verification_type] || "Complete requirement"}
-                              </p>
-                            )}
-                            {task.verification_type === 'none' && (
-                              <p className="text-[11px] text-muted-foreground mt-0.5">Tap to open</p>
-                            )}
+                            <p className="text-[11px] text-muted-foreground mt-0.5 truncate">
+                              {task.verification_type !== 'none'
+                                ? (VERIFICATION_LABELS[task.verification_type] || "Complete requirement")
+                                : "Tap to open"}
+                            </p>
                           </div>
-                          <div className="shrink-0 text-right">
-                            <div className="flex items-center gap-1 justify-end">
-                              <p className={`text-base font-display font-bold ${textColor} leading-none`}>+{task.reward_amount}</p>
-                            </div>
-                            <p className="text-[10px] text-muted-foreground tracking-wider mt-1">{label}</p>
-                          </div>
+                          <span className="shrink-0 rounded-full bg-primary/15 px-2.5 py-1 font-display text-[11px] font-bold text-primary">
+                            +{task.reward_amount} {label}
+                          </span>
                         </div>
                         {claiming === task.id && (
                           <div className="mt-3 h-1 bg-muted rounded-full overflow-hidden">
@@ -229,6 +220,7 @@ const TasksPage = () => {
                     </motion.div>
                   );
                 })}
+
               </AnimatePresence>
             </div>
           )}

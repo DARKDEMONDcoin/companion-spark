@@ -101,6 +101,13 @@ const AttackShopPage = () => {
   const ActiveIcon = CATEGORY_ICONS[activeCategory];
   const activeGradient = CATEGORY_GRADIENTS[activeCategory];
 
+  const handleSmartOffer = async (surface: "servers" | "shop") => {
+    const ok = await requestSmartOffer(surface);
+    if (!ok) {
+      toast({ title: "Offer unavailable", description: "Try again in a moment", variant: "destructive" });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-dark pb-24 px-4 pt-safe">
       {/* Hero Header */}
@@ -125,7 +132,7 @@ const AttackShopPage = () => {
         </div>
       </motion.div>
 
-      <DiscountBanner discount={discount} thinking={offerThinking} onSmartOffer={() => void requestSmartOffer("shop")} />
+      <DiscountBanner discount={discount} thinking={offerThinking} onSmartOffer={() => void handleSmartOffer("shop")} />
 
       {/* Category Selector */}
       <div className="grid grid-cols-3 gap-2 mb-4">
@@ -168,7 +175,7 @@ const AttackShopPage = () => {
           {items.map((pkg, i) => {
             const isCheapest = pkg.key === cheapestKey;
             const Icon = CATEGORY_ICONS[activeCategory];
-            return (
+
               <motion.div
                 key={pkg.key}
                 initial={{ opacity: 0, x: -10 }}

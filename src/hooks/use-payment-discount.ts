@@ -67,16 +67,18 @@ export const usePaymentDiscount = () => {
    * always recomputed and capped server-side.
    */
   const requestSmartOffer = useCallback(
-    async (surface: "servers" | "shop" | "ai" | "general" = "general") => {
-      if (!telegramId) return;
+    async (surface: "servers" | "shop" | "ai" | "general" = "general"): Promise<boolean> => {
+      if (!telegramId) return false;
       setThinking(true);
       try {
-        await supabase.functions.invoke("ai-smart-offer", {
+        const { error } = await supabase.functions.invoke("ai-smart-offer", {
           body: { telegram_id: telegramId, surface },
         });
         await refresh();
+        return !error;
       } catch {
         /* the tier discount still applies without the AI bonus */
+        return false;
       } finally {
         setThinking(false);
       }

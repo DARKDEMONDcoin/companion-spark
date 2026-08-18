@@ -1,3 +1,4 @@
+// AI smart offer: personalised discount bonus (redeploy trigger).
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { createOpenAICompatible } from "npm:@ai-sdk/openai-compatible";
