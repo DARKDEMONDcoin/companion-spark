@@ -360,7 +360,7 @@ serve(async (req) => {
     const starsForTon = (priceTon: number) => Math.max(1, Math.round((priceTon * 3.5) / 0.015));
 
     if (body.pre_checkout_query) {
-      await tg('answerPreCheckoutQuery', { pre_checkout_query_id: body.pre_checkout_query.id, ok: true });
+      await starsTg('answerPreCheckoutQuery', { pre_checkout_query_id: body.pre_checkout_query.id, ok: true });
       return new Response(JSON.stringify({ ok: true }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 
@@ -405,7 +405,7 @@ serve(async (req) => {
           })
           .eq('id', row.id);
 
-        await tg('sendMessage', {
+        await starsTg('sendMessage', {
           chat_id: body.message.chat.id,
           text: `✅ Payment received — ${product?.title ?? row.product} is now active.`,
         });
@@ -458,7 +458,7 @@ serve(async (req) => {
         return new Response(JSON.stringify({ error: insErr.message }), { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
       }
 
-      const invoice = await tg('createInvoiceLink', {
+      const invoice = await starsTg('createInvoiceLink', {
         title: product.title.slice(0, 32),
         description: product.description.slice(0, 255),
         payload,
