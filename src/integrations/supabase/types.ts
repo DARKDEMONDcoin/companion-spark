@@ -14,6 +14,35 @@ export type Database = {
   }
   public: {
     Tables: {
+      ad_watch_progress: {
+        Row: {
+          ads_watched: number
+          total_claims: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          ads_watched?: number
+          total_claims?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          ads_watched?: number
+          total_claims?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ad_watch_progress_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       admin_error_log: {
         Row: {
           context: Json | null
@@ -12502,6 +12531,9 @@ export type Database = {
           o_workspace_id: string
         }[]
       }
+      ad_watch_claim: { Args: { _telegram_id: number }; Returns: Json }
+      ad_watch_get_progress: { Args: { _telegram_id: number }; Returns: Json }
+      ad_watch_increment: { Args: { _telegram_id: number }; Returns: Json }
       add_credits: {
         Args: { p_amount: number; p_description?: string; p_user_id: string }
         Returns: Json
