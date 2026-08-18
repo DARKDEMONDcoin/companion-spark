@@ -156,6 +156,28 @@ export const completeTaskForTelegram = (telegramId: number, taskId: string) =>
     "complete_task_for_telegram", { _telegram_id: telegramId, _task_id: taskId }
   );
 
+// ── Ad watching task (500 ads -> 0.5 Gram) ──
+export const AD_TASK_GOAL = 500;
+export const AD_TASK_REWARD = 0.5;
+
+export const getAdProgressForTelegram = (telegramId: number) =>
+  callRpc<{ success: boolean; adsWatched: number; totalClaims: number }>("ad_watch_get_progress", {
+    _telegram_id: telegramId,
+  });
+
+export const incrementAdWatchForTelegram = (telegramId: number) =>
+  callRpc<{ success: boolean; adsWatched: number }>("ad_watch_increment", { _telegram_id: telegramId });
+
+export const claimAdRewardForTelegram = (telegramId: number) =>
+  callRpc<{
+    success: boolean;
+    error?: string;
+    rewardAmount?: number;
+    rewardType?: string;
+    adsWatched: number;
+    balances?: { siri: number; ton: number; usdt: number };
+  }>("ad_watch_claim", { _telegram_id: telegramId });
+
 // ── Referrals ──
 export const getReferralSummaryForTelegram = (telegramId: number) =>
   callRpc<ReferralSummary>("get_referral_summary_for_telegram", { _telegram_id: telegramId });
