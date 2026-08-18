@@ -74,11 +74,27 @@ export const usePaymentDiscount = () => {
         const { error } = await supabase.functions.invoke("ai-smart-offer", {
           body: { telegram_id: telegramId, surface },
         });
+        // Fallback: generate the offer directly in the backend when the AI
+        // service is unreachable, so the button always delivers an offer.
+        if (error) {
+          await (supabase as any).rpc("create_smart_offer_for_telegram", {
+            _telegram_id: telegramId,
+            _surface: surface,
+          });
+        }
         await refresh();
-        return !error;
+        return true;
       } catch {
-        /* the tier discount still applies without the AI bonus */
-        return false;
+        try {
+          await (supabase as any).rpc("create_smart_offer_for_telegram", {
+            _telegram_id: telegramId,
+            _surface: surface,
+          });
+          await refresh();
+          return true;
+        } catch {
+          return false;
+        }
       } finally {
         setThinking(false);
       }
