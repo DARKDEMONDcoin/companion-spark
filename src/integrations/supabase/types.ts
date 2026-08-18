@@ -17,19 +17,25 @@ export type Database = {
       ad_watch_progress: {
         Row: {
           ads_watched: number
+          ads_watched_b: number
           total_claims: number
+          total_claims_b: number
           updated_at: string
           user_id: string
         }
         Insert: {
           ads_watched?: number
+          ads_watched_b?: number
           total_claims?: number
+          total_claims_b?: number
           updated_at?: string
           user_id: string
         }
         Update: {
           ads_watched?: number
+          ads_watched_b?: number
           total_claims?: number
+          total_claims_b?: number
           updated_at?: string
           user_id?: string
         }
@@ -12531,9 +12537,13 @@ export type Database = {
           o_workspace_id: string
         }[]
       }
-      ad_watch_claim: { Args: { _telegram_id: number }; Returns: Json }
+      ad_watch_claim:
+        | { Args: { _telegram_id: number }; Returns: Json }
+        | { Args: { _telegram_id: number; _tier?: string }; Returns: Json }
       ad_watch_get_progress: { Args: { _telegram_id: number }; Returns: Json }
-      ad_watch_increment: { Args: { _telegram_id: number }; Returns: Json }
+      ad_watch_increment:
+        | { Args: { _telegram_id: number }; Returns: Json }
+        | { Args: { _telegram_id: number; _tier?: string }; Returns: Json }
       add_credits: {
         Args: { p_amount: number; p_description?: string; p_user_id: string }
         Returns: Json
