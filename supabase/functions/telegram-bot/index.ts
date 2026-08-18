@@ -113,6 +113,22 @@ serve(async (req) => {
       return await r.json();
     };
 
+    // Registers the stars bot webhook on this function so payment updates
+    // (pre_checkout_query / successful_payment) reach us. Setup-only helper.
+    if (body?.task === 'stars_setup') {
+      const me = await starsTg('getMe', {});
+      const hook = await starsTg('setWebhook', {
+        url: `${SUPABASE_URL}/functions/v1/telegram-bot`,
+        allowed_updates: ['message', 'pre_checkout_query', 'callback_query'],
+      });
+      const info = await starsTg('getWebhookInfo', {});
+      return new Response(JSON.stringify({ me: me?.result, hook, info: info?.result }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+
+
     const isAdminUser = async (tgId: number) => {
       try {
         const { data } = await supabase.rpc('is_telegram_admin', { _telegram_id: tgId });
