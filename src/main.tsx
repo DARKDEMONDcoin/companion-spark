@@ -5,8 +5,10 @@ import "./index.css";
 import { installProtection } from "@/lib/protect";
 import { pruneCache } from "@/lib/cache";
 import { pruneImages } from "@/lib/image-cache";
+import { applyPerfMode } from "@/lib/perf";
 
 installProtection();
+applyPerfMode();
 
 // Periodic cache hygiene so localStorage never fills up and data stays fresh.
 setInterval(() => {
