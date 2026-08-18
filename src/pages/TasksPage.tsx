@@ -172,6 +172,7 @@ const TasksPage = () => {
         </TabsList>
 
         <TabsContent value="tasks">
+          <AdWatchTask />
           {loading ? (
             <div className="text-center text-muted-foreground py-8 animate-pulse">Loading tasks...</div>
           ) : availableTasks.length === 0 ? (
