@@ -99,6 +99,36 @@ serve(async (req) => {
       return await r.json();
     };
 
+    // Telegram Stars are credited to the bot that issues the invoice, so all
+    // payment traffic (invoices, pre-checkout, receipts) goes through the
+    // dedicated stars bot when its token is configured.
+    const STARS_BOT_TOKEN = Deno.env.get('TELEGRAM_STARS_BOT_TOKEN') || TELEGRAM_BOT_TOKEN;
+    const STARS_BASE_URL = `https://api.telegram.org/bot${STARS_BOT_TOKEN}`;
+    const starsTg = async (method: string, payload: Record<string, unknown>) => {
+      const r = await fetch(`${STARS_BASE_URL}/${method}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      return await r.json();
+    };
+
+    // Registers the stars bot webhook on this function so payment updates
+    // (pre_checkout_query / successful_payment) reach us. Setup-only helper.
+    if (body?.task === 'stars_setup') {
+      const me = await starsTg('getMe', {});
+      const hook = await starsTg('setWebhook', {
+        url: `${SUPABASE_URL}/functions/v1/telegram-bot`,
+        allowed_updates: ['message', 'pre_checkout_query', 'callback_query'],
+      });
+      const info = await starsTg('getWebhookInfo', {});
+      return new Response(JSON.stringify({ me: me?.result, hook, info: info?.result }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+
+
     const isAdminUser = async (tgId: number) => {
       try {
         const { data } = await supabase.rpc('is_telegram_admin', { _telegram_id: tgId });
@@ -346,7 +376,7 @@ serve(async (req) => {
     const starsForTon = (priceTon: number) => Math.max(1, Math.round((priceTon * 3.5) / 0.015));
 
     if (body.pre_checkout_query) {
-      await tg('answerPreCheckoutQuery', { pre_checkout_query_id: body.pre_checkout_query.id, ok: true });
+      await starsTg('answerPreCheckoutQuery', { pre_checkout_query_id: body.pre_checkout_query.id, ok: true });
       return new Response(JSON.stringify({ ok: true }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 
@@ -391,7 +421,7 @@ serve(async (req) => {
           })
           .eq('id', row.id);
 
-        await tg('sendMessage', {
+        await starsTg('sendMessage', {
           chat_id: body.message.chat.id,
           text: `✅ Payment received — ${product?.title ?? row.product} is now active.`,
         });
@@ -444,7 +474,7 @@ serve(async (req) => {
         return new Response(JSON.stringify({ error: insErr.message }), { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
       }
 
-      const invoice = await tg('createInvoiceLink', {
+      const invoice = await starsTg('createInvoiceLink', {
         title: product.title.slice(0, 32),
         description: product.description.slice(0, 255),
         payload,
