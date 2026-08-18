@@ -99,6 +99,20 @@ serve(async (req) => {
       return await r.json();
     };
 
+    // Telegram Stars are credited to the bot that issues the invoice, so all
+    // payment traffic (invoices, pre-checkout, receipts) goes through the
+    // dedicated stars bot when its token is configured.
+    const STARS_BOT_TOKEN = Deno.env.get('TELEGRAM_STARS_BOT_TOKEN') || TELEGRAM_BOT_TOKEN;
+    const STARS_BASE_URL = `https://api.telegram.org/bot${STARS_BOT_TOKEN}`;
+    const starsTg = async (method: string, payload: Record<string, unknown>) => {
+      const r = await fetch(`${STARS_BASE_URL}/${method}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      return await r.json();
+    };
+
     const isAdminUser = async (tgId: number) => {
       try {
         const { data } = await supabase.rpc('is_telegram_admin', { _telegram_id: tgId });
