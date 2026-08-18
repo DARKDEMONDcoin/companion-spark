@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Zap } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useApp } from "@/context/AppContext";
 import { useToast } from "@/hooks/use-toast";
@@ -26,12 +27,6 @@ const VERIFICATION_LABELS: Record<string, string> = {
   mining_hours: "Complete 3 mining sessions",
   server_purchase: "Buy your first server",
   kill_monster: "Land a killing blow on a monster",
-};
-
-const REWARD_TEXT_COLORS: Record<string, string> = {
-  ton: "text-primary",
-  usdt: "text-primary",
-  siri: "text-accent",
 };
 
 const REWARD_LABEL: Record<string, string> = {

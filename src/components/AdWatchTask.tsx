@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { PlayCircle } from "lucide-react";
 import { useApp } from "@/context/AppContext";
 import { useToast } from "@/hooks/use-toast";
 import { showAd } from "@/lib/telegram-ads";
@@ -103,16 +104,18 @@ const AdWatchTask = () => {
     return (
       <div className="rounded-2xl p-3.5">
         <div className="flex items-center gap-3">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-accent/15">
+            <PlayCircle className="h-4 w-4 text-accent" />
+          </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold text-foreground">Watch {goal} ads</p>
-            <p className="text-[11px] text-muted-foreground mt-0.5">
+            <p className="text-sm font-semibold text-foreground truncate">Watch {goal} ads</p>
+            <p className="text-[11px] text-muted-foreground mt-0.5 truncate">
               {count}/{goal} watched
             </p>
           </div>
-          <div className="shrink-0 text-right">
-            <p className="text-base font-display font-bold text-primary leading-none">+{reward}</p>
-            <p className="text-[10px] text-muted-foreground tracking-wider mt-1">Gram</p>
-          </div>
+          <span className="shrink-0 rounded-full bg-accent/15 px-2.5 py-1 font-display text-[11px] font-bold text-accent">
+            +{reward} Gram
+          </span>
         </div>
 
         <div className="mt-3 h-1.5 bg-muted rounded-full overflow-hidden">
