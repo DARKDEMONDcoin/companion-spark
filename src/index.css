@@ -725,3 +725,21 @@ button.mining-active-btn::after {
   mask-composite: exclude;
   pointer-events: none;
 }
+
+/* ---- Reduced-cost mode for low-end devices / reduced motion ---- */
+.perf-lite .glass,
+.perf-lite .glass-panel,
+.perf-lite [class*="backdrop-blur"] {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+
+.perf-lite .glass,
+.perf-lite .glass-panel {
+  background: hsl(var(--glass-tint) / 0.92);
+}
+
+.perf-lite [data-sonner-toaster] [data-sonner-toast] {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
