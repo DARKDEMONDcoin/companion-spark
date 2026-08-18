@@ -176,6 +176,9 @@ const AttackShopPage = () => {
             const isCheapest = pkg.key === cheapestKey;
             const Icon = CATEGORY_ICONS[activeCategory];
 
+            return (
+
+
               <motion.div
                 key={pkg.key}
                 initial={{ opacity: 0, x: -10 }}
