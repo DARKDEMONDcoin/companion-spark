@@ -67,8 +67,23 @@ const showAdsgramAd = async (): Promise<boolean> => {
   }
 };
 
-/** Shows one ad: RichAds first, Adsgram automatically if RichAds has none. */
+/**
+ * Shows one ad with mutual fallback: the two networks back each other up.
+ * Sources are alternated so load is shared, and if the first one has no ad
+ * the other one is tried immediately.
+ */
+let lastSource: "rich" | "adsgram" = "adsgram";
+
 export const showAd = async (): Promise<boolean> => {
-  if (await showRichAd()) return true;
-  return showAdsgramAd();
+  const richFirst = lastSource === "adsgram";
+  const order: Array<"rich" | "adsgram"> = richFirst ? ["rich", "adsgram"] : ["adsgram", "rich"];
+
+  for (const source of order) {
+    const ok = source === "rich" ? await showRichAd() : await showAdsgramAd();
+    if (ok) {
+      lastSource = source;
+      return true;
+    }
+  }
+  return false;
 };
