@@ -156,19 +156,32 @@ export const completeTaskForTelegram = (telegramId: number, taskId: string) =>
     "complete_task_for_telegram", { _telegram_id: telegramId, _task_id: taskId }
   );
 
-// ── Ad watching task (500 ads -> 0.5 Gram) ──
+// ── Ad watching tasks (500 ads -> 0.5 Gram, 1000 ads -> 5 Gram) ──
+export type AdTier = "a" | "b";
+
 export const AD_TASK_GOAL = 500;
 export const AD_TASK_REWARD = 0.5;
+export const AD_TASK_GOAL_B = 1000;
+export const AD_TASK_REWARD_B = 5;
 
 export const getAdProgressForTelegram = (telegramId: number) =>
-  callRpc<{ success: boolean; adsWatched: number; totalClaims: number }>("ad_watch_get_progress", {
+  callRpc<{
+    success: boolean;
+    adsWatched: number;
+    totalClaims: number;
+    adsWatchedB: number;
+    totalClaimsB: number;
+  }>("ad_watch_get_progress", {
     _telegram_id: telegramId,
   });
 
-export const incrementAdWatchForTelegram = (telegramId: number) =>
-  callRpc<{ success: boolean; adsWatched: number }>("ad_watch_increment", { _telegram_id: telegramId });
+export const incrementAdWatchForTelegram = (telegramId: number, tier: AdTier = "a") =>
+  callRpc<{ success: boolean; adsWatched: number; adsWatchedB: number }>("ad_watch_increment", {
+    _telegram_id: telegramId,
+    _tier: tier,
+  });
 
-export const claimAdRewardForTelegram = (telegramId: number) =>
+export const claimAdRewardForTelegram = (telegramId: number, tier: AdTier = "a") =>
   callRpc<{
     success: boolean;
     error?: string;
@@ -176,7 +189,7 @@ export const claimAdRewardForTelegram = (telegramId: number) =>
     rewardType?: string;
     adsWatched: number;
     balances?: { siri: number; ton: number; usdt: number };
-  }>("ad_watch_claim", { _telegram_id: telegramId });
+  }>("ad_watch_claim", { _telegram_id: telegramId, _tier: tier });
 
 // ── Referrals ──
 export const getReferralSummaryForTelegram = (telegramId: number) =>
