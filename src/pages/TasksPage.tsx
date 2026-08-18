@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { completeTaskForTelegram, getReferralSummaryForTelegram, type ReferralSummary } from "@/lib/game-api";
 import SpotlightHero from "@/components/hero/SpotlightHero";
+import AdWatchTask from "@/components/AdWatchTask";
 import { swr } from "@/lib/cache";
 
 interface Task {
