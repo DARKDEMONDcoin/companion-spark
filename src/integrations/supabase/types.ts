@@ -12851,6 +12851,10 @@ export type Database = {
         }
         Returns: string
       }
+      create_smart_offer_for_telegram: {
+        Args: { _surface?: string; _telegram_id: number }
+        Returns: Json
+      }
       create_workspace: {
         Args: { p_name: string; p_plan?: string }
         Returns: {
